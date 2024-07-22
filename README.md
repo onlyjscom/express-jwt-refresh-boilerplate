@@ -482,7 +482,6 @@ Retrieves a list of all posts.
     "createdAt": "2024-07-17T15:15:00.000Z",
     "updatedAt": "2024-07-17T15:15:00.000Z"
   }
-  // more posts
 ]
 ```
 
