@@ -1,5 +1,5 @@
 {
-  "name": "jwt",
+  "name": "express-jwt-refresh-boilerplate",
   "version": "1.0.0",
   "main": "src/index.ts",
   "type": "module",
@@ -9,9 +9,9 @@
     "db:migrate": "node --import tsx/esm ./node_modules/.bin/knex migrate:latest --env development --migrations-directory './src/database/migrations'"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Uğur İLTER <contact@ugurilter.com>",
+  "license": "MIT",
+  "description": "Minimal Node.js Express JWT Refresh Token Boilerplate",
   "dependencies": {
     "@node-rs/argon2": "^1.8.3",
     "better-sqlite3": "^11.1.2",

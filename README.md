@@ -68,7 +68,7 @@ developing web applications.
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/ilterugur/express-jwt-refresh-boilerplate.git
+    git clone https://github.com/onlyjscom/express-jwt-refresh-boilerplate.git
     cd express-jwt-refresh-boilerplate
     ```
 
