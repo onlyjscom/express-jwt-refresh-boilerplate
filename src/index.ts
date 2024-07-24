@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express, { NextFunction, Request, Response, Router } from 'express';
 import 'express-async-errors'; // This module monkey patches express to allow async error handling
+import cors from 'cors';
 import './tasks'; // Import the tasks to run the cron jobs
 import { HttpError } from 'http-errors';
 import { AuthRouter } from './modules/auth';
@@ -13,6 +14,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json() as any);
+app.use(cors()); // You may want to restrict this to only the domains you trust in a production app
 
 const api = Router();
 
