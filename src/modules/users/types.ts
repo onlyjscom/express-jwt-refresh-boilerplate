@@ -5,12 +5,12 @@ export interface UserDb {
     lastName: string;
     role: 'user' | 'admin';
     createdAt: string;
-    updatedAt: null | string;
+    updatedAt: string;
 }
 
 export interface User extends Omit<UserDb, 'createdAt' | 'updatedAt'> {
     createdAt: Date;
-    updatedAt: null | Date;
+    updatedAt: Date;
 }
 
 export interface UserWithHashedPassword extends User {

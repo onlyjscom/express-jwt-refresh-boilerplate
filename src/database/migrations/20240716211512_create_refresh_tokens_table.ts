@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         table.datetime('revokedAt').defaultTo(null);
         table.datetime('expiresAt').notNullable();
         table.dateTime('createdAt').notNullable().defaultTo(knex.fn.now());
-        table.dateTime('updatedAt').defaultTo(null);
+        table.dateTime('updatedAt').notNullable().defaultTo(knex.fn.now());
     });
 }
 

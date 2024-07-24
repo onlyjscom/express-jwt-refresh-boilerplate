@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
         table.enum('role', ['user', 'admin']).notNullable();
         table.string('hashedPassword').notNullable();
         table.dateTime('createdAt').notNullable().defaultTo(knex.fn.now());
-        table.dateTime('updatedAt').defaultTo(null);
+        table.dateTime('updatedAt').notNullable().defaultTo(knex.fn.now());
     });
 }
 
