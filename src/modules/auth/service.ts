@@ -150,6 +150,10 @@ class AuthService {
                 throw new UnprocessableEntityException('Refresh token revoked');
             }
 
+            if (refreshToken.expiresAt < new Date()) {
+                throw new UnprocessableEntityException('Refresh token expired');
+            }
+
             const refreshTokenDbIssuedAt = refreshToken.updatedAt;
 
             const oldRefreshTokenIssuedAt = new Date(0);
