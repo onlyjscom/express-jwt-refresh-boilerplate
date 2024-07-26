@@ -154,6 +154,9 @@ express-jwt-refresh-boilerplate
 
 ## Usage 🚀
 
+You can import the Postman collection file in the repository root directory to test the API endpoints.
+Alternatively, you can use the following documentation to interact with the API.
+
 ### Register
 
 **Endpoint:** `POST /api/auth/register`
@@ -419,9 +422,9 @@ All fields are optional.
 ```json
 {
   "id": 1,
-  "username": "newUsername",
-  "firstName": "newFirstName",
-  "lastName": "newLastName",
+  "username": "newusername",
+  "firstName": "Newfirstname",
+  "lastName": "Newlastname",
   "role": "user",
   "createdAt": "2024-07-16T21:15:00.000Z",
   "updatedAt": "2024-07-16T23:35:00.000Z"
