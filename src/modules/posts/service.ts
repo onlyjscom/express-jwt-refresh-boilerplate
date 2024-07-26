@@ -1,5 +1,5 @@
 import { parsePost, Posts } from '../../database';
-import { PostCreatePayload, PostUpdatePayload } from './schemas';
+import { PostCreatePayload, PostUpdatePayload } from './request-schemas';
 import { formatSqliteDate, NotFoundException } from '../../utils';
 import { PostDb } from './types';
 

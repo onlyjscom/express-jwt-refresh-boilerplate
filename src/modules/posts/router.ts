@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { authenticate, validateRequest } from '../../middlewares';
 import { PostsController } from './controller';
-import { postCreateSchema, postDestroySchema, postIndexSchema, postShowSchema, postUpdateSchema } from './schemas';
+import { postCreateRequestSchema, postDestroyRequestSchema, postIndexRequestSchema, postShowRequestSchema, postUpdateRequestSchema } from './request-schemas';
 
 const app = Router();
 
-app.get('/', validateRequest(postIndexSchema), PostsController.index);
-app.post('/', [validateRequest(postCreateSchema), authenticate], PostsController.store);
-app.get('/:id', validateRequest(postShowSchema), PostsController.show);
-app.put('/:id', [validateRequest(postUpdateSchema), authenticate], PostsController.update);
-app.delete('/:id', [validateRequest(postDestroySchema), authenticate], PostsController.destroy);
+app.get('/', validateRequest(postIndexRequestSchema), PostsController.index);
+app.post('/', [validateRequest(postCreateRequestSchema), authenticate], PostsController.store);
+app.get('/:id', validateRequest(postShowRequestSchema), PostsController.show);
+app.put('/:id', [validateRequest(postUpdateRequestSchema), authenticate], PostsController.update);
+app.delete('/:id', [validateRequest(postDestroyRequestSchema), authenticate], PostsController.destroy);
 
 export {
     app as PostsRouter,

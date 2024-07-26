@@ -1,9 +1,9 @@
 import * as argon2 from '@node-rs/argon2';
 import { parseUser, Users } from '../../database';
-import { UserUpdatePayload } from './schemas';
+import { UserUpdatePayload } from './request-schemas';
 import { capitalize, formatSqliteDate, NotFoundException } from '../../utils';
 import { UserDb } from './types';
-import { UserRegistrationPayload } from '../auth/schemas';
+import { UserRegistrationPayload } from '../auth/request-schemas';
 
 export const returningUserFields = ['id', 'username', 'firstName', 'lastName', 'role', 'createdAt', 'updatedAt'];
 

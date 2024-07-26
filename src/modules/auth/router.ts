@@ -1,13 +1,13 @@
 import './passport';
 import { Router } from 'express';
-import { authMiddlewares, authenticate, validateRequest } from '../../middlewares';
+import { authenticate, authMiddlewares, validateRequest } from '../../middlewares';
 import { AuthController } from './controller';
-import { userLoginSchema, userRegistrationSchema } from './schemas';
+import { userLoginRequestSchema, userRegistrationRequestSchema } from './request-schemas';
 
 const app = Router();
 
-app.post('/register', validateRequest(userRegistrationSchema), AuthController.register);
-app.post('/login', [validateRequest(userLoginSchema), authMiddlewares['local']], AuthController.login);
+app.post('/register', validateRequest(userRegistrationRequestSchema), AuthController.register);
+app.post('/login', [validateRequest(userLoginRequestSchema), authMiddlewares['local']], AuthController.login);
 app.get('/me', authenticate, AuthController.me);
 app.post('/refresh', authMiddlewares['jwt-refresh'], AuthController.refresh);
 app.post('/logout', authMiddlewares['jwt-refresh'], AuthController.logout);

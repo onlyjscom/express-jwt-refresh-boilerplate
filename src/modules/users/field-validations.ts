@@ -7,9 +7,9 @@ const lastName = z.string().min(2).max(32);
 const role = z.enum(['user', 'admin']).default('user');
 
 export {
-    username as usernameSchema,
-    password as passwordSchema,
-    firstName as firstNameSchema,
-    lastName as lastNameSchema,
-    role as roleSchema,
+    username as usernameValidation,
+    password as passwordValidation,
+    firstName as firstNameValidation,
+    lastName as lastNameValidation,
+    role as roleValidation,
 };

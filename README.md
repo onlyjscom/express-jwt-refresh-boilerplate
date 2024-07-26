@@ -119,30 +119,30 @@ express-jwt-refresh-boilerplate
 │   │   │   ├── index.ts
 │   │   │   ├── passport.ts
 │   │   │   ├── router.ts
-│   │   │   ├── schemas.ts
+│   │   │   ├── request-schemas.ts
 │   │   │   ├── service.ts
 │   │   │   └── types.ts
 │   │   ├── posts
 │   │   │   ├── controller.ts
 │   │   │   ├── index.ts
 │   │   │   ├── router.ts
-│   │   │   ├── schemas.ts
+│   │   │   ├── request-schemas.ts
 │   │   │   ├── service.ts
 │   │   │   ├── types.ts
-│   │   │   └── validations.ts
+│   │   │   └── field-validations.ts
 │   │   └── users
 │   │       ├── controller.ts
 │   │       ├── index.ts
 │   │       ├── router.ts
-│   │       ├── schemas.ts
+│   │       ├── request-schemas.ts
 │   │       ├── service.ts
 │   │       ├── types.ts
-│   │       └── validations.ts
+│   │       └── field-validations.ts
 │   ├── tasks
 │   │   ├── auth.ts
 │   │   └── index.ts
 │   └── utils
-│       ├── common-schemas.ts
+│       ├── common-field-validations.ts
 │       ├── date-helpers.ts
 │       ├── http-errors.ts
 │       ├── index.ts
