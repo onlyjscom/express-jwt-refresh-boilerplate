@@ -643,9 +643,9 @@ To validate requests, use the `validateRequest` middleware:
 
 ```typescript
 import { authenticate, validateRequest } from '../../middlewares';
-import { postCreateSchema } from './schemas';
+import { postCreationRequestSchema } from './schemas';
 
-app.post('/posts', [validateRequest(postCreateSchema), authenticate], (req, res) => {
+app.post('/posts', [validateRequest(postCreationRequestSchema), authenticate], (req, res) => {
     // Handle post creation
 });
 ```

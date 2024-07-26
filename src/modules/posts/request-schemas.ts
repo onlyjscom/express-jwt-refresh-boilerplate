@@ -15,7 +15,7 @@ export const postShowRequestSchema = z.strictObject({
     }),
 });
 
-export const postCreateRequestSchema = z.strictObject({
+export const postCreationRequestSchema = z.strictObject({
     body: z.strictObject({
         title: titleValidation,
         content: contentValidation,
@@ -39,5 +39,5 @@ export const postDestroyRequestSchema = z.strictObject({
 });
 
 
-export type PostCreatePayload = z.infer<typeof postCreateRequestSchema>['body'];
+export type PostCreatePayload = z.infer<typeof postCreationRequestSchema>['body'];
 export type PostUpdatePayload = z.infer<typeof postUpdateRequestSchema>['body'];
