@@ -142,6 +142,7 @@ express-jwt-refresh-boilerplate
 │   │   ├── auth.ts
 │   │   └── index.ts
 │   └── utils
+│       ├── common-schemas.ts
 │       ├── date-helpers.ts
 │       ├── http-errors.ts
 │       ├── index.ts
