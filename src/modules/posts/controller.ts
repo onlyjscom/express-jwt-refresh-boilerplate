@@ -7,7 +7,9 @@ import { Post } from './types';
 
 export class PostsController {
     static async index(req: Request, res: Response, next: NextFunction) {
-        const posts = await PostsService.index();
+        const userId = req.query.userId ? +req.query.userId : undefined;
+
+        const posts = await PostsService.index({ userId });
 
         res.json(posts);
     }

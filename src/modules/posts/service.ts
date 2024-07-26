@@ -4,15 +4,22 @@ import { formatSqliteDate, NotFoundException } from '../../utils';
 import { PostDb } from './types';
 
 class PostsService {
-    async index() {
-        const postsRaw: PostDb[] = await Posts();
+    async index({ userId }: { userId?: number } = {}) {
+        let postsQuery = Posts();
+
+        if (userId) {
+            postsQuery = postsQuery.where({ userId });
+        }
+
+        const postsRaw: PostDb[] = await postsQuery;
+
         const posts = postsRaw.map(postRaw => parsePost(postRaw)!);
 
         return posts;
     }
 
     async show(id: number) {
-        const postRaw: PostDb = await Posts().where({ id }).select().first();
+        const postRaw: PostDb = await Posts().where({ id }).first();
         const post = parsePost(postRaw);
 
         if (!post) {
@@ -22,7 +29,7 @@ class PostsService {
         return post;
     }
 
-    async store(payload: PostCreatePayload) {
+    async store(payload: PostCreatePayload & { userId: number }) {
         const [postRaw]: [PostDb] = await Posts().insert(payload).returning('*');
         const post = parsePost(postRaw);
 

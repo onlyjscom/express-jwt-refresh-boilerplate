@@ -327,6 +327,10 @@ Authorization: Bearer jwtRefreshToken
 
 Retrieves a list of all users.
 
+**Query Parameters:**
+
+- `role`: Filter users by role. Available roles are "user" and "admin". (optional)
+
 **Response:**
 
 ```json
@@ -408,6 +412,8 @@ Authorization: Bearer jwtAccessToken
 }
 ```
 
+All fields are optional.
+
 **Response:**
 
 ```json
@@ -453,6 +459,10 @@ Authorization: Bearer jwtAccessToken
 **Endpoint:** `GET /api/posts`
 
 Retrieves a list of all posts.
+
+**Query Parameters:**
+
+- `userId`: Filter posts by user ID. (optional)
 
 **Response:**
 
@@ -566,6 +576,8 @@ Authorization: Bearer jwtAccessToken
   "content": "Updated Post Content"
 }
 ```
+
+All fields are optional.
 
 **Response:**
 

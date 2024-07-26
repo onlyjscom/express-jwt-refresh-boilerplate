@@ -5,7 +5,9 @@ import { ForbiddenException, NotFoundException } from '../../utils';
 
 export class UsersController {
     static async index(req: Request, res: Response, next: NextFunction) {
-        const users = await UsersService.index();
+        const role = req.query.role as 'user' | 'admin';
+
+        const users = await UsersService.index({ role });
 
         res.json(users);
     }

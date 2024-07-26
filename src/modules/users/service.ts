@@ -8,8 +8,14 @@ import { UserRegistrationPayload } from '../auth/schemas';
 export const returningUserFields = ['id', 'username', 'firstName', 'lastName', 'role', 'createdAt', 'updatedAt'];
 
 class UsersService {
-    async index() {
-        const usersRaw: UserDb[] = await Users().select(returningUserFields);
+    async index({ role }: { role?: 'user' | 'admin' } = {}) {
+        let query = Users().select(returningUserFields);
+
+        if (role) {
+            query = query.where({ role });
+        }
+
+        const usersRaw: UserDb[] = await query;
         const users = usersRaw.map(userRaw => parseUser(userRaw)!);
 
         return users;
