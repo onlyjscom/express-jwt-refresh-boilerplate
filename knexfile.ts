@@ -1,4 +1,4 @@
-import type {Knex} from "knex";
+import type { Knex } from 'knex';
 
 const config: { [key: string]: Knex.Config } = {
     development: {
@@ -7,6 +7,9 @@ const config: { [key: string]: Knex.Config } = {
             filename: './db.sqlite',
         },
         useNullAsDefault: true,
+        migrations: {
+            directory: './src/database/migrations',
+        },
     },
 };
 
