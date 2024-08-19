@@ -93,4 +93,5 @@ export {
     NetworkAuthenticationRequireException,
 };
 
+// @ts-ignore
 export * from 'http-errors';

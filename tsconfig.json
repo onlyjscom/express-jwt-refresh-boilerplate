@@ -19,8 +19,8 @@
     "emitDecoratorMetadata": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "exactOptionalPropertyTypes": true,
-    "strictNullChecks": true,
+    "exactOptionalPropertyTypes": false,
+    "strictNullChecks": true
   },
   "ts-node": {
     "compilerOptions": {

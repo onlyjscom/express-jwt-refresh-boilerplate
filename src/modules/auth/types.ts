@@ -1,14 +1,14 @@
 export interface RefreshTokenDb {
     id: number;
     userId: number;
-    revokedAt?: string;
+    revokedAt: string | null;
     expiresAt: string;
     createdAt: string;
     updatedAt: string;
 }
 
 export interface RefreshToken extends Omit<RefreshTokenDb, 'createdAt' | 'updatedAt' | 'revokedAt' | 'expiresAt'> {
-    revokedAt?: Date;
+    revokedAt: Date | null;
     expiresAt: Date;
     createdAt: Date;
     updatedAt: Date;

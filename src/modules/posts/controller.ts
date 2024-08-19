@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { PostsService } from './service';
 import { ForbiddenException, NotFoundException } from '../../utils';
-import { User, UsersService } from '../users';
-import { Post } from './types';
+import { UsersService } from '../users';
 
 
 export class PostsController {
@@ -24,7 +23,7 @@ export class PostsController {
 
     static async store(req: Request, res: Response, next: NextFunction) {
         const payload = req.body;
-        const userId = req.user.id;
+        const userId = req.user!.id;
 
         const post = await PostsService.store({ ...payload, userId });
 
@@ -33,7 +32,7 @@ export class PostsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         const postId = +req.params.id;
-        const userId = req.user.id;
+        const userId = req.user!.id;
 
         await checkIfAllowedToModify(userId, postId);
 
@@ -46,7 +45,7 @@ export class PostsController {
 
     static async destroy(req: Request, res: Response, next: NextFunction) {
         const postId = +req.params.id;
-        const userId = req.user.id;
+        const userId = req.user!.id;
 
         await checkIfAllowedToModify(userId, postId);
 
@@ -62,7 +61,7 @@ export class PostsController {
 
 
 async function checkIfAllowedToModify(userId: number, postId: number) {
-    const [user, post] = (await Promise.all([UsersService.show(userId), PostsService.show(postId)])) as [User, Post];
+    const [user, post] = (await Promise.all([UsersService.show(userId), PostsService.show(postId)]));
 
     const allowed = user.role === 'admin' || user.id === post.userId;
 

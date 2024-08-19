@@ -3,12 +3,12 @@ import * as argon2 from '@node-rs/argon2';
 import * as process from 'process';
 import { convertToSeconds, formatSqliteDate, NotFoundException, UnprocessableEntityException } from '../../utils';
 import { parseRefreshToken, parseUser, RefreshTokens, Users } from '../../database';
-import { RefreshTokenDb, RtPayload } from './types';
-import { returningUserFields, User, UserDb, UserWithHashedPassword } from '../users';
+import { RtPayload } from './types';
+import { returningUserFields, User, UserDb } from '../users';
 
 
-export const JWT_SECRET_AT = process.env.JWT_SECRET_AT;
-export const JWT_SECRET_RT = process.env.JWT_SECRET_RT;
+export const JWT_SECRET_AT = process.env.JWT_SECRET_AT!;
+export const JWT_SECRET_RT = process.env.JWT_SECRET_RT!;
 
 const allTokenSettings = {
     accessToken: {
@@ -23,17 +23,22 @@ const allTokenSettings = {
 
 class AuthService {
 
-    async findUserFromCredentials(username: string, password: string): Promise<UserWithHashedPassword | null> {
-        const userRaw: UserDb | null = await Users().where({ username }).select([...returningUserFields, 'hashedPassword']).first();
-        const user = parseUser(userRaw) as UserWithHashedPassword;
+    async findUserFromCredentials(username: string, password: string): Promise<User> {
+        const userRaw = await Users().where({ username }).select<UserDb>([...returningUserFields, 'hashedPassword']).first();
 
-        if (!user) {
+        if (!userRaw) {
             throw new NotFoundException('User not found');
         }
 
-        const passwordMatch = await this.verifyPassword(user.hashedPassword, password);
+        const passwordMatch = await this.verifyPassword(userRaw.hashedPassword, password);
 
-        return passwordMatch ? user : null;
+        if (!passwordMatch) {
+            throw new NotFoundException('User not found');
+        }
+
+        const user = parseUser(userRaw);
+
+        return user;
     }
 
     async generateAuthTokens(user: User, oldRtPayload?: RtPayload): Promise<{
@@ -49,12 +54,14 @@ class AuthService {
     }
 
     async revokeRefreshToken(jti: number) {
-        const refreshTokenDb: RefreshTokenDb = await RefreshTokens().where({ id: jti }).first();
-        const refreshToken = parseRefreshToken(refreshTokenDb);
+        const refreshTokenDb = await RefreshTokens().where({ id: jti }).first();
 
-        if (!refreshToken) {
+        if (!refreshTokenDb) {
             throw new NotFoundException('Refresh token not found');
         }
+
+        const refreshToken = parseRefreshToken(refreshTokenDb);
+
 
         if (refreshToken.revokedAt) {
             throw new UnprocessableEntityException('Refresh token already revoked');
@@ -69,7 +76,9 @@ class AuthService {
         const revokedTokensCount = await RefreshTokens().where({
             userId,
             revokedAt: null,
-        }).update({ revokedAt: formatSqliteDate(new Date()) });
+        }).update({
+            revokedAt: formatSqliteDate(new Date()),
+        });
 
         return revokedTokensCount;
     }
@@ -123,7 +132,7 @@ class AuthService {
             userId: number,
             issuedAt: Date,
             tokenExpiresAt: Date,
-            oldRtPayload?: RtPayload,
+            oldRtPayload: RtPayload | undefined,
         }) {
         let jti = oldRtPayload?.jti;
         const tokenExpiresAtString = formatSqliteDate(tokenExpiresAt);
@@ -131,15 +140,20 @@ class AuthService {
 
         if (!oldRtPayload) {
             // We need to store the jti of the refresh token in the database
-            const [refreshTokenDb]: [{ id: number }] = await RefreshTokens().insert({
+            const refreshTokenDb = (await RefreshTokens().insert({
                 userId,
                 expiresAt: tokenExpiresAtString,
                 createdAt: iatString, // These dates need to be equal to "iat" of signed token. That's why we manually set them here
                 updatedAt: iatString, // We will validate refresh token freshness based on these dates when refresh is requested
-            }).returning(['id']);
+            }).returning(['id']).first())!;
             jti = refreshTokenDb.id;
         } else {
-            const refreshTokenDb: RefreshTokenDb | null = await RefreshTokens().where({ id: jti }).first();
+            const refreshTokenDb = await RefreshTokens().where({ id: jti }).first();
+
+            if (!refreshTokenDb) {
+                throw new NotFoundException('Invalid refresh token');
+            }
+
             const refreshToken = parseRefreshToken(refreshTokenDb);
 
             if (!refreshToken) {
