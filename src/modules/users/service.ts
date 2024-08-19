@@ -2,32 +2,34 @@ import * as argon2 from '@node-rs/argon2';
 import { parseUser, Users } from '../../database';
 import { UserUpdatePayload } from './request-schemas';
 import { capitalize, formatSqliteDate, NotFoundException } from '../../utils';
-import { UserDb } from './types';
+import { UserDbWithoutHashedPassword } from './types';
 import { UserRegistrationPayload } from '../auth/request-schemas';
 
 export const returningUserFields = ['id', 'username', 'firstName', 'lastName', 'role', 'createdAt', 'updatedAt'];
 
 class UsersService {
     async index({ role }: { role?: 'user' | 'admin' } = {}) {
-        let query = Users().select(returningUserFields);
+        let query = Users().select<UserDbWithoutHashedPassword[]>(returningUserFields);
 
         if (role) {
             query = query.where({ role });
         }
 
-        const usersRaw: UserDb[] = await query;
-        const users = usersRaw.map(userRaw => parseUser(userRaw)!);
+        const usersRaw = await query;
+        const users = usersRaw.map(userRaw => parseUser(userRaw));
 
         return users;
     }
 
     async show(id: number) {
-        const userRaw: UserDb = await Users().where({ id }).select(returningUserFields).first();
-        const user = parseUser(userRaw);
+        const userRaw = await Users().where({ id }).select<UserDbWithoutHashedPassword>(returningUserFields).first();
 
-        if (!user) {
+        if (!userRaw) {
             throw new NotFoundException('User not found');
         }
+
+        const user = parseUser(userRaw);
+
 
         return user;
     }
@@ -35,10 +37,10 @@ class UsersService {
     async store(payloadRaw: UserRegistrationPayload, lang?: string) {
         const payload = await this.prepareUserPayload({ ...payloadRaw, role: payloadRaw.role ?? 'user' }, lang);
 
-        const [userRaw]: [UserDb] = await Users().insert(payload).returning(returningUserFields);
+        const userRaw = (await Users().insert(payload).returning<UserDbWithoutHashedPassword>(returningUserFields).first())!;
         const user = parseUser(userRaw);
 
-        return user!;
+        return user;
     }
 
     async update(id: number, payloadRaw: UserUpdatePayload, lang?: string) {
@@ -46,12 +48,13 @@ class UsersService {
 
         await Users().where({ id }).update({ ...payload, updatedAt: formatSqliteDate(new Date()) });
 
-        const updatedUserRaw: UserDb = await Users().where({ id }).select(returningUserFields).first();
-        const updatedUser = parseUser(updatedUserRaw);
+        const updatedUserRaw = await Users().where({ id }).select<UserDbWithoutHashedPassword>(returningUserFields).first();
 
-        if (!updatedUser) {
+        if (!updatedUserRaw) {
             throw new NotFoundException('User not found');
         }
+
+        const updatedUser = parseUser(updatedUserRaw);
 
         return updatedUser;
     }
@@ -81,9 +84,10 @@ class UsersService {
             role,
         };
 
-        Object.keys(userPayload).forEach(key => {
-            if (userPayload[key] == null) {
-                delete userPayload[key];
+        Object.keys(userPayload).forEach((key) => {
+            const _key = key as keyof typeof userPayload;
+            if (userPayload[_key] == null) {
+                delete userPayload[_key];
             }
         });
 
