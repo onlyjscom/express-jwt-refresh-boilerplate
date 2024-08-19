@@ -1,9 +1,9 @@
 import { ZodError, ZodIssue, ZodIssueCode, ZodSchema } from 'zod';
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-export function validateRequest<Schema extends ZodSchema>(schema: Schema) {
-    return (req: Request, res: Response, next: NextFunction) => {
+export function validateRequest<Schema extends ZodSchema>(schema: Schema): RequestHandler {
+    return (req, res, next) => {
         try {
             // Filter out undefined keys
             const parsedRequest = {

@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { AuthService, JWT_SECRET_AT, JWT_SECRET_RT } from './service';
 import { ExtractJwt, Strategy as JwtStrategy, StrategyOptions as JwtStrategyOptions } from 'passport-jwt';
-import { User, UsersService } from '../users';
+import { UsersService } from '../users';
 
 
 const optsForAt: JwtStrategyOptions = {
@@ -54,8 +54,10 @@ passport.use('jwt-refresh', new JwtStrategy(optsForRt, async function(req, jwtPa
 }));
 
 
-declare module 'express' {
-    interface Request {
-        user: User;
+declare global {
+    type AuthUser = import('../users').User;
+    namespace Express {
+        interface User extends AuthUser {
+        }
     }
 }

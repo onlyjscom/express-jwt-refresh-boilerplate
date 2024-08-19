@@ -11,7 +11,7 @@ class PostsService {
             postsQuery = postsQuery.where({ userId });
         }
 
-        const postsRaw: PostDb[] = await postsQuery;
+        const postsRaw = await postsQuery;
 
         const posts = postsRaw.map(postRaw => parsePost(postRaw)!);
 
@@ -19,18 +19,19 @@ class PostsService {
     }
 
     async show(id: number) {
-        const postRaw: PostDb = await Posts().where({ id }).first();
-        const post = parsePost(postRaw);
+        const postRaw = await Posts().where({ id }).first();
 
-        if (!post) {
+        if (!postRaw) {
             throw new NotFoundException('Post not found');
         }
+
+        const post = parsePost(postRaw);
 
         return post;
     }
 
     async store(payload: PostCreatePayload & { userId: number }) {
-        const [postRaw]: [PostDb] = await Posts().insert(payload).returning('*');
+        const postRaw = (await Posts().insert(payload).returning<PostDb>('*').first())!;
         const post = parsePost(postRaw);
 
         return post!;
@@ -39,12 +40,14 @@ class PostsService {
     async update(id: number, payload: PostUpdatePayload) {
         await Posts().where({ id }).update({ ...payload, updatedAt: formatSqliteDate(new Date()) });
 
-        const updatedPostRaw: PostDb = await Posts().where({ id }).first();
-        const updatedPost = parsePost(updatedPostRaw);
+        const updatedPostRaw = await Posts().where({ id }).first();
 
-        if (!updatedPost) {
+
+        if (!updatedPostRaw) {
             throw new NotFoundException('Post not found');
         }
+
+        const updatedPost = parsePost(updatedPostRaw);
 
         return updatedPost;
     }
