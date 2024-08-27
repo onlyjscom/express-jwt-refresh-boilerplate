@@ -11,7 +11,7 @@ class PostsService {
             postsQuery = postsQuery.where({ userId });
         }
 
-        const postsRaw = await postsQuery;
+        const postsRaw: PostDb[] = await postsQuery;
 
         const posts = postsRaw.map(postRaw => parsePost(postRaw)!);
 

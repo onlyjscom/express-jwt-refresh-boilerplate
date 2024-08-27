@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "db:migrate": "knex migrate:latest --env development"
+    "db:migrate": "knex migrate:latest --env development",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "Uğur İLTER <contact@ugurilter.com>",

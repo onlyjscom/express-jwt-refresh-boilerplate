@@ -13,7 +13,7 @@ import * as process from 'process';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use(express.json() as any);
 app.use(cors()); // You may want to restrict this to only the domains you trust in a production app
 
 const api = Router();

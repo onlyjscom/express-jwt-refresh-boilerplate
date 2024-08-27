@@ -2,7 +2,7 @@ import * as argon2 from '@node-rs/argon2';
 import { parseUser, Users } from '../../database';
 import { UserUpdatePayload } from './request-schemas';
 import { capitalize, formatSqliteDate, NotFoundException } from '../../utils';
-import { UserDbWithoutHashedPassword } from './types';
+import { UserDb, UserDbWithoutHashedPassword } from './types';
 import { UserRegistrationPayload } from '../auth/request-schemas';
 
 export const returningUserFields = ['id', 'username', 'firstName', 'lastName', 'role', 'createdAt', 'updatedAt'];
@@ -15,7 +15,7 @@ class UsersService {
             query = query.where({ role });
         }
 
-        const usersRaw = await query;
+        const usersRaw: UserDbWithoutHashedPassword[] = await query;
         const users = usersRaw.map(userRaw => parseUser(userRaw));
 
         return users;
@@ -37,7 +37,7 @@ class UsersService {
     async store(payloadRaw: UserRegistrationPayload, lang?: string) {
         const payload = await this.prepareUserPayload({ ...payloadRaw, role: payloadRaw.role ?? 'user' }, lang);
 
-        const userRaw = (await Users().insert(payload).returning<UserDbWithoutHashedPassword>(returningUserFields).first())!;
+        const userRaw = (await Users().insert(payload as UserDb).returning<UserDbWithoutHashedPassword>(returningUserFields).first())!;
         const user = parseUser(userRaw);
 
         return user;

@@ -24,7 +24,12 @@
   },
   "ts-node": {
     "compilerOptions": {
-      "module": "CommonJS"
+      "moduleDetection": "force",
+      "module": "CommonJS",
+      "resolveJsonModule": true,
+      "allowJs": true,
+      "esModuleInterop": true,
+      "isolatedModules": true
     }
   },
   "include": [

@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { PostsService } from './service';
 import { ForbiddenException, NotFoundException } from '../../utils';
-import { UsersService } from '../users';
+import { User, UsersService } from '../users';
+import { Post } from './types';
 
 
 export class PostsController {
@@ -61,7 +62,7 @@ export class PostsController {
 
 
 async function checkIfAllowedToModify(userId: number, postId: number) {
-    const [user, post] = (await Promise.all([UsersService.show(userId), PostsService.show(postId)]));
+    const [user, post]: [User, Post] = (await Promise.all([UsersService.show(userId), PostsService.show(postId)]));
 
     const allowed = user.role === 'admin' || user.id === post.userId;
 

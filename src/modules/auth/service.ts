@@ -3,7 +3,7 @@ import * as argon2 from '@node-rs/argon2';
 import * as process from 'process';
 import { convertToSeconds, formatSqliteDate, NotFoundException, UnprocessableEntityException } from '../../utils';
 import { parseRefreshToken, parseUser, RefreshTokens, Users } from '../../database';
-import { RtPayload } from './types';
+import { RefreshTokenDb, RtPayload } from './types';
 import { returningUserFields, User, UserDb } from '../users';
 
 
@@ -24,7 +24,7 @@ const allTokenSettings = {
 class AuthService {
 
     async findUserFromCredentials(username: string, password: string): Promise<User> {
-        const userRaw = await Users().where({ username }).select<UserDb>([...returningUserFields, 'hashedPassword']).first();
+        const userRaw: UserDb | undefined = await Users().where({ username }).select<UserDb>([...returningUserFields, 'hashedPassword']).first();
 
         if (!userRaw) {
             throw new NotFoundException('User not found');
@@ -54,7 +54,7 @@ class AuthService {
     }
 
     async revokeRefreshToken(jti: number) {
-        const refreshTokenDb = await RefreshTokens().where({ id: jti }).first();
+        const refreshTokenDb: RefreshTokenDb | undefined = await RefreshTokens().where({ id: jti }).first();
 
         if (!refreshTokenDb) {
             throw new NotFoundException('Refresh token not found');
@@ -140,12 +140,12 @@ class AuthService {
 
         if (!oldRtPayload) {
             // We need to store the jti of the refresh token in the database
-            const refreshTokenDb = (await RefreshTokens().insert({
+            const refreshTokenDb: RefreshTokenDb = (await RefreshTokens().insert({
                 userId,
                 expiresAt: tokenExpiresAtString,
                 createdAt: iatString, // These dates need to be equal to "iat" of signed token. That's why we manually set them here
                 updatedAt: iatString, // We will validate refresh token freshness based on these dates when refresh is requested
-            }).returning(['id']).first())!;
+            }).returning<RefreshTokenDb>(['id']).first())!;
             jti = refreshTokenDb.id;
         } else {
             const refreshTokenDb = await RefreshTokens().where({ id: jti }).first();
