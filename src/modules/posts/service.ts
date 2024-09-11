@@ -31,7 +31,7 @@ class PostsService {
     }
 
     async store(payload: PostCreatePayload & { userId: number }) {
-        const postRaw = (await Posts().insert(payload).returning<PostDb>('*').first())!;
+        const postRaw = (await Posts().insert(payload).returning<PostDb>('*'))[0] as PostDb;
         const post = parsePost(postRaw);
 
         return post!;

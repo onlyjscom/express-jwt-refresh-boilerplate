@@ -145,7 +145,7 @@ class AuthService {
                 expiresAt: tokenExpiresAtString,
                 createdAt: iatString, // These dates need to be equal to "iat" of signed token. That's why we manually set them here
                 updatedAt: iatString, // We will validate refresh token freshness based on these dates when refresh is requested
-            }).returning<RefreshTokenDb>(['id']).first())!;
+            }).returning<RefreshTokenDb>(['id']))[0] as RefreshTokenDb;
             jti = refreshTokenDb.id;
         } else {
             const refreshTokenDb = await RefreshTokens().where({ id: jti }).first();
