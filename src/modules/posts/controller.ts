@@ -16,6 +16,9 @@ export class PostsController {
 
     static async show(req: Request, res: Response, next: NextFunction) {
         const id = +req.params.id;
+        const userId = req.user!.id;
+
+        await checkIfAllowedToRead(userId, id);
 
         const post = await PostsService.show(id);
 
@@ -67,6 +70,17 @@ async function checkIfAllowedToModify(userId: number, postId: number) {
     const allowed = user.role === 'admin' || user.id === post.userId;
 
     if (!allowed) {
+        throw new ForbiddenException();
+    }
+}
+
+async function checkIfAllowedToRead(userId: number, postId: number) {
+    const [user, post]: [User, Post] = await Promise.all([
+        UsersService.show(userId),
+        PostsService.show(postId),
+    ]);
+
+    if (user.role !== 'admin' && user.id !== post.userId) {
         throw new ForbiddenException();
     }
 }

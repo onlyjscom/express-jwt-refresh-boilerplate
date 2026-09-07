@@ -35,7 +35,7 @@ class UsersService {
     }
 
     async store(payloadRaw: UserRegistrationPayload, lang?: string) {
-        const payload = await this.prepareUserPayload({ ...payloadRaw, role: payloadRaw.role ?? 'user' }, lang);
+        const payload = await this.prepareUserPayload({ ...payloadRaw, role: 'user' }, lang);
 
         const userRaw = (await Users().insert(payload as UserDb).returning<UserDbWithoutHashedPassword>(returningUserFields))[0] as UserDbWithoutHashedPassword;
         const user = parseUser(userRaw);

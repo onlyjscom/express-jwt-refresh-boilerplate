@@ -3,7 +3,6 @@ import {
     firstNameValidation,
     lastNameValidation,
     passwordValidation,
-    roleValidation,
     usernameValidation,
 } from '../users/field-validations';
 
@@ -13,7 +12,6 @@ export const userRegistrationRequestSchema = z.strictObject({
         password: passwordValidation,
         firstName: firstNameValidation,
         lastName: lastNameValidation,
-        role: roleValidation.optional(), // You probably want to remove this line in a real project and set the role in the backend
     }),
 });
 

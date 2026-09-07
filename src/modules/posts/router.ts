@@ -7,7 +7,7 @@ const app = Router();
 
 app.get('/', validateRequest(postIndexRequestSchema), PostsController.index);
 app.post('/', [validateRequest(postCreationRequestSchema), authenticate], PostsController.store);
-app.get('/:id', validateRequest(postShowRequestSchema), PostsController.show);
+app.get('/:id', [validateRequest(postShowRequestSchema), authenticate], PostsController.show);
 app.put('/:id', [validateRequest(postUpdateRequestSchema), authenticate], PostsController.update);
 app.delete('/:id', [validateRequest(postDestroyRequestSchema), authenticate], PostsController.destroy);
 

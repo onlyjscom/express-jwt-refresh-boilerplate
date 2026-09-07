@@ -8,11 +8,13 @@ import { UsersService } from '../users';
 const optsForAt: JwtStrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: JWT_SECRET_AT,
+    algorithms: ['HS256'],
 };
 
 const optsForRt: JwtStrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: JWT_SECRET_RT,
+    algorithms: ['HS256'],
     passReqToCallback: true,
 };
 
@@ -34,6 +36,10 @@ passport.use('local', new LocalStrategy(
 
 passport.use('jwt', new JwtStrategy(optsForAt, async function(jwtPayload, done) {
     try {
+        if (!hasValidExpiration(jwtPayload)) {
+            return done(null, false);
+        }
+
         const user = await UsersService.show(+jwtPayload.sub);
 
         return done(null, user);
@@ -44,6 +50,10 @@ passport.use('jwt', new JwtStrategy(optsForAt, async function(jwtPayload, done) 
 
 passport.use('jwt-refresh', new JwtStrategy(optsForRt, async function(req, jwtPayload, done) {
     try {
+        if (!hasValidExpiration(jwtPayload)) {
+            return done(null, false);
+        }
+
         const user = await UsersService.show(+jwtPayload.sub);
         req.jwtPayload = jwtPayload;
 
@@ -52,6 +62,10 @@ passport.use('jwt-refresh', new JwtStrategy(optsForRt, async function(req, jwtPa
         return done(null, false);
     }
 }));
+
+function hasValidExpiration(payload: { exp?: unknown }): boolean {
+    return typeof payload.exp === 'number' && payload.exp > Math.floor(Date.now() / 1000);
+}
 
 
 declare global {
