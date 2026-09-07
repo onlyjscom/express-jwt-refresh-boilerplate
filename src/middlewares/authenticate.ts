@@ -26,7 +26,6 @@ const passportCallback = (req: Request, res: Response, next: NextFunction, unaut
 const local = (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body;
 
-    // If email or password is missing, send an error back to the client
     if (!username || !password) {
         return res.status(400).json({ message: 'Username and password are required' });
     }

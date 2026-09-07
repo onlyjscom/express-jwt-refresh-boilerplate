@@ -16,6 +16,10 @@ export class UsersController {
     static async show(req: Request, res: Response, next: NextFunction) {
         const id = +req.params.id;
 
+        if (req.user!.role !== 'admin' && req.user!.id !== id) {
+            throw new ForbiddenException();
+        }
+
         const user = await UsersService.show(id);
 
         res.json(user);
@@ -52,11 +56,9 @@ export class UsersController {
 
 function checkIfAllowedToModify(req: Request) {
     const allowed = req.user!.role === 'admin' || req.user!.id === +req.params.id;
+    const changesRole = req.body.role !== undefined;
 
-    // In a real project, you must also check if the user is trying to update their role to 'admin'
-    // and throw a ForbiddenException if they are not allowed to do so
-
-    if (!allowed) {
+    if (!allowed || (changesRole && req.user!.role !== 'admin')) {
         throw new ForbiddenException();
     }
 }
